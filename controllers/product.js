@@ -26,7 +26,7 @@ exports.read = (req, res) => {
 
 exports.create = (req, res) => {
   let form = new formidable.IncomingForm();
-  form.multiples = true;
+  form.multiples = false;
   form.keepExtensions = true;
   form.parse(req, (err, fields, files) => {
     if (err) {
