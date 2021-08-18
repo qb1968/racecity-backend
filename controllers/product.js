@@ -24,6 +24,26 @@ exports.read = (req, res) => {
   return res.json(req.product);
 };
 
+exports.productById = (req, res, next, id) => {
+  Product.findById(id)
+    .populate("category")
+    .exec((err, product) => {
+      if (err || !product) {
+        return res.status(400).json({
+          error: "Product not found",
+        });
+      }
+      req.product = product;
+      next();
+    });
+};
+
+exports.read = (req, res) => {
+  // req.product.photo = undefined;
+   req.product.image = undefined;
+  return res.json(req.product);
+};
+
 exports.create = (req, res) => {
   let form = new formidable.IncomingForm();
   form.multiples = false;
@@ -89,6 +109,71 @@ exports.create = (req, res) => {
   });
 };
 
+exports.create = (req, res) => {
+  let form = new formidable.IncomingForm();
+  form.multiples = false;
+  form.keepExtensions = true;
+  form.parse(req, (err, fields, files) => {
+    if (err) {
+      return res.status(400).json({
+        error: "Image could not be uploaded",
+      });
+    }
+    // check for all fields
+    const { name, description, price, category, quantity, shipping } = fields;
+
+    if (
+      !name ||
+      !description ||
+      !price ||
+      !category ||
+      !quantity ||
+      !shipping
+    ) {
+      return res.status(400).json({
+        error: "All fields are required",
+      });
+    }
+
+    let product = new Product(fields);
+
+    // 1kb = 1000
+    // 1mb = 1000000
+
+    // if (files.photo) {
+    //   console.log("FILES PHOTO: ", files.photo);
+    //   if (files.photo.size > 50000000) {
+    //     return res.status(400).json({
+    //       error: "Image should be less than 10mb in size",
+    //     });
+    //   }
+    //   product.photo.data = fs.readFileSync(files.photo.path);
+    //   product.photo.contentType = files.photo.type;
+    // }
+    if (files.image) {
+     console.log("FILES IMAGE: ", files.image);
+      if (files.image.size > 50000000) {
+        return res.status(400).json({
+          error: 'Image should be less than 10mb in size',
+        });
+      }
+      product.image.data = fs.readFileSync(files.image.path);
+      product.image.contentType = files.image.type;
+    }
+
+    product.save((err, result) => {
+      if (err) {
+        console.log("PRODUCT CREATE ERROR ", err);
+        return res.status(400).json({
+          error: errorHandler(err),
+        });
+      }
+      res.json(result);
+    });
+  });
+};
+
+
 exports.remove = (req, res) => {
   let product = req.product;
   product.remove((err, deletedProduct) => {
@@ -151,6 +236,55 @@ exports.update = (req, res) => {
   });
 };
 
+exports.update = (req, res) => {
+  let form = new formidable.IncomingForm();
+  form.keepExtensions = true;
+  form.parse(req, (err, fields, files) => {
+    if (err) {
+      return res.status(400).json({
+        error: "Image could not be uploaded",
+      });
+    }
+
+    let product = req.product;
+    product = _.extend(product, fields);
+
+    // 1kb = 1000
+    // 1mb = 1000000
+
+    // if (files.photo) {
+    //   // console.log("FILES PHOTO: ", files.photo);
+    //   if (files.photo.size > 50000000) {
+    //     return res.status(400).json({
+    //       error: "Image should be less than 10mb in size",
+    //     });
+    //   }
+    //   product.photo.data = fs.readFileSync(files.photo.path);
+    //   product.photo.contentType = files.photo.type;
+    // }
+     if (files.image) {
+     console.log("FILES IMAGE: ", files.image);
+      if (files.image.size > 50000000) {
+        return res.status(400).json({
+          error: 'Image should be less than 10mb in size',
+        });
+      }
+      product.image.data = fs.readFileSync(files.image.path);
+      product.image.contentType = files.image.type;
+    }
+
+    product.save((err, result) => {
+      if (err) {
+        return res.status(400).json({
+          error: errorHandler(err),
+        });
+      }
+      res.json(result);
+    });
+  });
+};
+
+
 /**
  * sell / arrival
  * by sell = /products?sortBy=sold&order=desc&limit=4
@@ -165,6 +299,7 @@ exports.list = (req, res) => {
 
   Product.find()
     .select('-photo')
+    .select('-image')
     .populate('category')
     .sort([[sortBy, order]])
     .limit(limit)
@@ -245,6 +380,7 @@ exports.listBySearch = (req, res) => {
 
   Product.find(findArgs)
     .select('-photo')
+    .select('-image')
     .populate('category')
     .sort([[sortBy, order]])
     .skip(skip)
@@ -269,13 +405,13 @@ exports.photo = (req, res, next) => {
   }
   next();
 };
-// exports.image = (req, res, next) => {
-//   if (req.product.image.data) {
-//     res.set('Content-Type', req.product.image.contentType);
-//     return res.send(req.product.image.data);
-//   }
-//   next();
-// };
+exports.image = (req, res, next) => {
+  if (req.product.image.data) {
+    res.set('Content-Type', req.product.image.contentType);
+    return res.send(req.product.image.data);
+  }
+  next();
+};
 
 exports.listSearch = (req, res) => {
   // create query object to hold search value and category value
