@@ -11,7 +11,7 @@ const {
   listRelated,
   listCategories,
   listBySearch,
-  photo,
+ photo,
   image,
   listSearch
 } = require('../controllers/product');

@@ -80,3 +80,8 @@ exports.isAdmin = (req, res, next) => {
   }
   next();
 };
+
+
+// BRAINTREE_MERCHANT_ID=hcjcv6mxtzbsx4tv
+// BRAINTREE_PUBLIC_KEY=q5gryyyjw2tnryft
+// BRAINTREE_PRIVATE_KEY=d9b69f31b9e6e26bd3cedb6a18aa8e47

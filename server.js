@@ -7,6 +7,7 @@ const cors = require('cors');
 const path = require('path');
 const expressValidator = require('express-validator');
 require('dotenv').config();
+
 // import routes
 const authRoutes = require('./routes/auth');
 const userRoutes = require('./routes/user');
@@ -55,6 +56,7 @@ app.use('/api', categoryRoutes);
 app.use('/api', productRoutes);
 app.use('/api', braintreeRoutes);
 app.use('/api', orderRoutes);
+
 
 // Server static assets if in production
 if (process.env.NODE_ENV === 'production') {
