@@ -24,6 +24,7 @@ const connectDB = async () => {
     await mongoose.connect(
       process.env.MONGOURI,
       {
+        
         useNewUrlParser: true,
         useUnifiedTopology: true,
         useCreateIndex: true,
@@ -41,7 +42,8 @@ connectDB();
 
 // middlewares
 app.use(morgan('dev'));
-app.use(bodyParser.json());
+app.use(bodyParser.json({ limit: "16mb", extended: true }));
+app.use(bodyParser.urlencoded({ limit: "16mb", extended: true }));
 app.use(cookieParser());
 app.use(expressValidator());
 app.use(cors());

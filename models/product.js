@@ -41,6 +41,11 @@ const productSchema = new mongoose.Schema(
       data: Buffer,
           contentType: String,
     },
+    // image: {
+    //   type: ObjectId,
+    //   ref: 'Image',
+    //   require: true,
+    // },
     
     shipping: {
       required: false,
