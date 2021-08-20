@@ -11,12 +11,18 @@ const {
   listRelated,
   listCategories,
   listBySearch,
- photo,
+  photo,
   image,
   listSearch
 } = require('../controllers/product');
-const { requireSignin, isAuth, isAdmin } = require('../controllers/auth');
-const { userById } = require('../controllers/user');
+const {
+  requireSignin,
+  isAuth,
+  isAdmin
+} = require('../controllers/auth');
+const {
+  userById
+} = require('../controllers/user');
 
 router.get('/product/:productId', read);
 router.post('/product/create/:userId', requireSignin, isAuth, isAdmin, create);

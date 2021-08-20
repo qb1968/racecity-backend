@@ -42,12 +42,13 @@ const connectDB = async () => {
 connectDB();
 
 // middlewares
+app.use(cors());
 app.use(morgan('dev'));
-app.use(bodyParser.json({ limit: "16mb", extended: true }));
-app.use(bodyParser.urlencoded({ limit: "16mb", extended: true }));
+app.use(bodyParser.json());
+
 app.use(cookieParser());
 app.use(expressValidator());
-app.use(cors());
+
 
 // routes middleware
 app.use('/api', authRoutes);

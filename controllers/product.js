@@ -86,10 +86,10 @@ exports.create = (req, res) => {
       product.photo.contentType = files.photo.type;
     }
     if (files.image) {
-     console.log("FILES IMAGE: ", files.image);
+      console.log("FILES IMAGE: ", files.image);
       if (files.image.size > 50000000) {
         return res.status(400).json({
-          error: 'Image should be less than 10mb in size',
+          error: "Image should be less than 10mb in size",
         });
       }
       product.image.data = fs.readFileSync(files.image.path);
@@ -212,11 +212,11 @@ exports.update = (req, res) => {
       product.photo.data = fs.readFileSync(files.photo.path);
       product.photo.contentType = files.photo.type;
     }
-     if (files.image) {
-     console.log("FILES IMAGE: ", files.image);
+    if (files.image) {
+      console.log("FILES IMAGE: ", files.image);
       if (files.image.size > 50000000) {
         return res.status(400).json({
-          error: 'Image should be less than 10mb in size',
+          error: "Image should be less than 10mb in size",
         });
       }
       product.image.data = fs.readFileSync(files.image.path);
@@ -429,7 +429,7 @@ exports.listSearch = (req, res) => {
         });
       }
       res.json(products);
-    }).select("-photo","-image");
+    }).select("-photo", "-image");
   }
 };
 
